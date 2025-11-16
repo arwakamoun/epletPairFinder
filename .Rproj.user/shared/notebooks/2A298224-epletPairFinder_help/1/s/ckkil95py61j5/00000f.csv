@@ -1,0 +1,6 @@
+"0",""
+"0","# Option 1 : fichier local"
+"0","clean_eplet <- import_and_clean_eplets(""eplets.xlsx"") # importer et nettoyer le fichier enregistré à partir de [EpRegistry](https://www.epregistry.com.br/databases/ABC)"
+"2","Erreur dans get_epregistry_data(local_excel = local_excel, url = url) : 
+  Le fichier specifie n'existe pas : eplets.xlsx
+"

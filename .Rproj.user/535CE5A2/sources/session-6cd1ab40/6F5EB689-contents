@@ -1,0 +1,159 @@
+---
+title: "Aide et tutoriel du package epletPairFinder"
+author: "Dr Arwa Kamoun – Laboratoire d'Immunologie, Laboratoire de Pathologie rénale (LR19ES11), Hôpital Hédi Chaker, Faculté de Médecine de Sfax, Université de Sfax (Tunisie)"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{epletPairFinder_help}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+# Principe biologique : Épitopes HLA, eplets et paradigme non-Self-Self
+
+## Les épitopes HLA, eplets et antigénicité
+
+Les antigènes HLA présentent à leur surface des régions tridimensionnelles appelées **épitopes**, reconnues par les anticorps anti-HLA.  
+Chaque épitope est une structure complexe composée de deux éléments complémentaires :
+
+### ● L’eplet : la partie fonctionnelle de l’épitope
+Le concept d’**eplet**, introduit par René Duquesnoy, désigne la **plus petite unité fonctionnelle** d’un épitope capable d’être reconnue directement par un anticorps.  
+Il s’agit en général d’un **motif de 2 à 3 acides aminés**, situés dans un rayon d’environ **3 Å**, qui forme la zone précise de contact avec le paratope de l’anticorps.
+
+### ● L’épitope de structure : le contexte tridimensionnel
+Autour de l’eplet fonctionnel se trouve un ensemble d’acides aminés situés dans un rayon pouvant atteindre **15 Å**.  
+Ces résidus constituent **l’épitope de structure** et jouent un rôle essentiel dans :
+
+- l’accessibilité de l’eplet,  
+- la distribution des charges électrostatiques,  
+- la stabilité de la liaison anticorps–antigène.
+
+👉 Ainsi, **un anticorps reconnaît un eplet**, mais cette reconnaissance dépend **du contexte structurel environnant**.  
+Deux antigènes HLA possédant un même eplet peuvent donc présenter une **réactivité différente** selon les résidus qui les entourent.
+
+---
+
+## Réactivité des anticorps et technologie Luminex SAB
+
+L’étude de la réactivité anti-HLA repose principalement sur la technologie **Luminex Single Antigen Bead (SAB)**.  
+Chaque bille porte un antigène HLA recombinant, et la fixation des anticorps est mesurée par la **MFI (Mean Fluorescence Intensity)**, indicateur semi-quantitatif de la liaison.
+
+Les profils de réactivité obtenus permettent d’identifier :
+
+- les **eplets étrangers** reconnus par les anticorps,
+- les **patterns de réactivité** liés aux variations de l’épitope de structure,
+- d’éventuelles combinaisons complexes d’eplets.
+
+---
+
+## Le paradigme non-Self-Self de Duquesnoy
+
+Certaines réactivités d’anticorps observées chez les patients ne peuvent pas être expliquées par la seule présence d’un eplet étranger.  
+Pour comprendre ces situations, Duquesnoy a proposé le paradigme **non-Self-Self**, fondé sur le fonctionnement des cellules B.
+
+### ● Les cellules B possèdent parfois des BCR à faible affinité pour des eplets du soi  
+Cette affinité est insuffisante pour déclencher leur activation.  
+
+### ● Activation par combinaison d’un eplet non-soi + eplet du soi  
+Lorsque l’antigène HLA étranger présente simultanément :
+
+- un **eplet non-soi**,  
+- **et un eplet présent sur le soi**,  
+
+il peut activer ces cellules B de faible affinité.  
+La présence de ces deux motifs induit une réponse anticorps.
+
+Ces combinaisons sont appelées **paires d’eplets Self/Non-Self**.
+
+### Exemples classiques  
+- 82LR + 138T → HLA-B, motif Bw4  
+- 82LR + 138M → HLA-A porteurs de Bw4  
+- 144KR + 127K → HLA-A24  
+
+Ces paires expliquent certaines réactivités où un anticorps semble cibler uniquement certains antigènes porteurs du même eplet fonctionnel du soi.
+
+---
+
+## Intérêt du package *epletPairFinder*
+
+Les logiciels d’appariement HLA (Matchmaker, EpVix…) éliminent les **eplets du soi** lors de l’analyse.  
+Cette approche empêche d’identifier les paires Self/Non-Self responsables de certaines réactivités.
+
+Le package **epletPairFinder** a été conçu pour répondre à ce besoin :
+
+1. Réintégrer les **eplets du soi** dans l’analyse.  
+2. Rechercher systématiquement les **combinaisons Self/Non-Self** présentes sur les antigènes réactifs.  
+3. Comparer ces combinaisons aux profils SAB selon un **seuil MFI** choisi.  
+4. Faciliter l’interprétation immunologique des anticorps anti-HLA.
+
+Ce package constitue ainsi un outil complémentaire à EpVix permettant une analyse plus fine des incongruences épitopiques.
+
+
+# Méthodologie
+
+## Étape 1 : Préparer les fichiers
+
+1. Créez un compte sur [EpVix](https://www.epvix.com.br).  
+2. Exportez les résultats Luminex (rawdata) au format `.xls`.
+3. Analyser la réactivité des Ac avec le logiciel [EpVix](https://www.epvix.com.br) comme c'est décrit par son tutoriel (Patient, typage HLA, analyse d'un nouveau panel pour ce patient)
+4. Importer le résultat de l'analyse (format `.xls` : identifiant_du_patient-panel.xls)
+
+<div style="text-align: center;">
+  <img src="img/im3.png" width="950"/>
+    Importation du fichier EpVix dans l’analyse
+  </p>
+</div>
+
+
+5. Réenregistrer ce dernier fichier au format `.xlsx` dans le dossier approprié.
+6. Si au moins un des Ag HLA classe I du receveur n est pas inclus dans la liste des Ag testés dans le Kit single Ag, obtenir les epitopes du soi a partir du logiciel EpVix : en haut et a gauche de la page du panel analyse, cliquer sur l'identifiant du patient
+
+<div style="text-align: center;">
+  <img src="img/im1.png" width="950"/>
+    Cliquer sur l'identifiant du patient pour accéder aux eplets du soi
+  </p>
+</div>
+une fenêtre s’ouvre renfermant toutes les informations y compris la liste des eplets du soi **Epítopos próprios**
+
+<div style="text-align: center;">
+  <img src="img/im2.png" width="950"/>
+    Copier la table des eplets du soi relatifs aux Ag HLA classe I
+  </p>
+</div>
+
+copier la table incluant les noms des loci HLA classe I, leur nombre et leurs listes  et les coller dans une autre feuille du fichier de l'analyse de la réactivité des Ac `.xlsx` puis enregistrer.
+
+7. Optionnel : Télécharger le tableau des eplets HLA classe I à partir de [EpRegistry](https://www.epregistry.com.br/databases/ABC) : copier/coller le tableau des eplets sans modification des titres dans un fichier excel `.xlsx`. 
+
+## Étape 2 : Importer les eplets
+```{r, eval=FALSE}
+
+# Option 1 : fichier local
+clean_eplet <- import_and_clean_eplets("eplets.xlsx") # importer et nettoyer le fichier enregistré à partir de [EpRegistry](https://www.epregistry.com.br/databases/ABC)
+
+# Option 2 : téléchargement automatique
+clean_eplet <- import_and_clean_eplets()
+
+Cela crée une liste de trois tables : 1-all_eplets, 2-confirmed_eplets, 3-exposed_eplets
+
+```
+
+## Étape 3 : Analyser la réactivité
+```{r, eval=FALSE}
+  resultats <- analyse_ACC(
+acc_file = "P001.xlsx", # Fichier .xlsx issu d’EpVix ex "P001.xlsx"
+clean_eplet = clean_eplet, # Liste importée via import_and_clean_eplets
+choix = 1, # Type d’eplets à considérer (1=all, 2=confirmed, 3=exposed), défaut = 1
+seuil = 1000, Seuil de positivité (MFI, défaut = 1000)
+soi_file = NULL, # soi_file = "P001.xlsx" si les eplets du soi sont présents sur une 2ème feuille
+output_excel = TRUE # Si TRUE, exporte un fichier Excel
+)
+```
+
+Les eplets retenus doivent ensuite être vérifiés en tenant compte de la distance qui les sépare, à l’aide de la plateforme [pHLA3D](https://www.phla3d.com.br/) ou de l’outil [Cn3D](https://www.ncbi.nlm.nih.gov/Structure/icn3d)
+
+# Références
+
+## Duquesnoy RJ. Humoral alloimmunity in transplantation: relevance of HLA epitope antigenicity and immunogenicity. Front Immunol. 2011 Nov 8;2:59. doi: 10.3389/fimmu.2011.00059. PMID: 22566848; PMCID: PMC3342002.
+## https://www.epvix.com.br/dashboard/help
+

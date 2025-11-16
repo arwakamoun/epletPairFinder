@@ -1,0 +1,34 @@
+Package: epletPairFinder
+Type: Package
+Title: Identification de nouveaux paires d’éplets à partir des données d'Ac anti-HLA analysés par EpVix (https://www.epvix.com.br/)
+Version: 0.1.0
+Authors@R: person("Arwa", "Kamoun", email = "kamoun_arwa@medecinesfax.org", role = c("aut", "cre"))
+Description: 
+    Outils pour l'analyse des anticorps anti-HLA basés sur les éplets.
+    Le package identifie les paires d'éplets non encore décrites 
+    à partir du fichier .xlsx exporté depuis EpVix, après analyse 
+    des données brutes issues du test Luminex.
+    Le principe repose sur la recherche de combinaisons 
+    "éplet du soi + éplet du non-soi", une approche non disponible 
+    dans les logiciels EpVix ou HLA Matchmaker qui excluent 
+    systématiquement les éplets du soi.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+Imports:
+    dplyr,
+    tidyr,
+    tidytext,
+    stringr,
+    readxl,
+    writexl,
+    chromote,
+    rvest,
+    tibble,
+    tools
+RoxygenNote: 7.3.3
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr

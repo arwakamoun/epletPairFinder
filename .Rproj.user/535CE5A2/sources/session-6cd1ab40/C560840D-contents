@@ -1,0 +1,83 @@
+
+# epletPairFinder
+
+Le package **epletPairFinder** permet d’identifier les *paires d’eplets
+Self/Non-Self* impliquées dans la réactivité des anticorps anti-HLA, à
+partir des résultats Luminex SAB (OneLambda) analysés via **EpVix**.
+
+Il complète les logiciels existants (EpVix, HLA-Matchmaker) en
+réintégrant les **eplets du soi** dans l’analyse, permettant ainsi de
+détecter les combinaisons **self/non-self** susceptibles d’activer les
+cellules B selon le paradigme de Duquesnoy.
+
+------------------------------------------------------------------------
+
+## ✨ Fonctionnalités principales
+
+- Importation et nettoyage du tableau des eplets HLA classe I
+  (EpRegistry ou fichier local)  
+- Lecture automatisée des résultats d’analyse EpVix  
+- Détection des **eplets du soi**  
+- Recherche systématique des **combinaisons self/non-self**  
+- Prise en compte de différents niveaux d’eplets : *all*, *confirmed*,
+  *exposed*  
+- Export des résultats au format Excel  
+- Exemples complets inclus dans `inst/extdata/`
+
+------------------------------------------------------------------------
+
+## 📦 Installation
+
+### Version GitHub
+
+``` r
+# install.packages("devtools")
+devtools::install_github("arwakamoun/epletPairFinder")
+```
+
+------------------------------------------------------------------------
+
+## Exemple minimal
+
+Importer les eplets (EpRegistry fourni dans inst/extdata/)
+
+``` r
+eplet_file <- system.file("extdata", "eplets.xlsx", package = "epletPairFinder")
+clean_eplet <- import_and_clean_eplets(eplet_file)
+```
+
+|  |
+|----|
+| Charger un fichier d’analyse EpVix |
+| `r P001 <- system.file("extdata", "P001-panel.xlsx", package = "epletPairFinder") resultats_P001 <- analyse_ACC(P001, clean_eplet)` |
+
+Voir les résultats
+
+``` r
+resultats_P001[[1]]  # eplets du soi
+resultats_P001[[2]]  # toutes les combinaisons Self/Non-Self
+resultats_P001[[3]]  # combinaisons les plus probables
+```
+
+# 📘 Documentation
+
+Une vignette complète expliquant la méthodologie d’analyse, les concepts
+immunologiques et les exemples détaillés est disponible ici :
+
+``` r
+browseVignettes("epletPairFinder")
+```
+
+# 📝 Références
+
+Duquesnoy RJ. Humoral alloimmunity in transplantation… Front Immunol.
+2011.
+
+<https://www.epvix.com.br>
+
+<https://www.epregistry.com.br/databases/ABC>
+
+# Auteur
+
+Dr Arwa Kamoun Laboratoire d’Immunologie & Pathologie Rénale Hôpital
+Hédi Chaker – Université de Sfax (Tunisie)

@@ -1,0 +1,10 @@
+# Charge devtools
+install.packages("devtools")  # si pas déjà installé
+library(devtools)
+
+# Build (crée le fichier .tar.gz)
+devtools::build()
+
+
+install.packages("E:/luminex/projet_ACC/epletPairFinder_0.1.0.tar.gz", 
+                 repos = NULL, type = "source")
