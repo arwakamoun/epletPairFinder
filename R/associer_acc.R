@@ -14,7 +14,7 @@ associer_acc <- function(case, seplet_nsallele) {
   case_f <- case %>%
     left_join(
       seplet_nsallele,
-      by = c("allele", "locus"),
+      by = c("allele"),
       relationship = "many-to-many"
     )
 

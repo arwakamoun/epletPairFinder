@@ -93,6 +93,7 @@ Le package **epletPairFinder** a été conçu pour répondre à ce besoin :
 2. Rechercher systématiquement les **combinaisons Self/Non-Self** présentes sur les antigènes réactifs.  
 3. Comparer ces combinaisons aux profils SAB selon un **seuil MFI** choisi.  
 4. Faciliter l’interprétation immunologique des anticorps anti-HLA.
+5. Dans la nouvelle version du package, analyser la combinaison de paires d'eplets du soi qui sont présents sur des Ag différents chez le receveur, et rassemblés sur les Ag réactifs.  
 
 Ce package constitue ainsi un outil complémentaire à EpVix permettant une analyse plus fine des incongruences épitopiques.
 
@@ -138,7 +139,7 @@ copier la table incluant les noms des loci HLA classe I, leur nombre et leurs li
 
 # Option 1 : fichier local
 clean_eplet <- import_and_clean_eplets("eplets.xlsx") # importer et nettoyer le fichier enregistré à partir de [EpRegistry](https://www.epregistry.com.br/databases/ABC)
-# un ex de fichier enregisté à partir de Epregistry est présent dans  `inst/extdata/`, il correspond à la version 2025-02-01 (IPD-IMGT/HLA: 3.62). Pour charger ce fichier, exécuter le code suivant :
+# un ex de fichier enregisté à partir de Epregistry est présent dans  `inst/extdata/`, il correspond à la version 2025-01-14 (IPD-IMGT/HLA: 3.63). Pour charger ce fichier, exécuter le code suivant :
 eplet_file <- system.file("extdata", "eplets.xlsx", package = "epletPairFinder")
 clean_eplet <- import_and_clean_eplets(eplet_file)
 
@@ -182,6 +183,30 @@ resultats_P002[[1]] # pour voir les eplets du soi
 resultats_P002[[2]] # pour voir toutes les combinaisons possibles self_non_self eplets (S_NS)
 resultats_P002[[3]] # pour voir les les combinaisons les plus probables self_non_self eplets (S_NS) (minimums de combinaisons pour le maximum de couverture des Ag positifs)
 ```
+
+## Étape 4 : Analyser la réactivité contre des paires d’eplets du soi
+```{r, eval=FALSE}
+
+resultats <- analyse_ACC_self(
+acc_file = "ID-panel.xlsx", # Fichier .xlsx issu d’EpVix ex "P003.xlsx"
+clean_eplet = clean_eplet, # Liste importée via import_and_clean_eplets
+seuil = 1000, # Seuil de positivité (MFI, défaut = 1000)
+soi_file = NULL, # soi_file = "ID-panel.xlsx" si les eplets du soi sont présents sur une 2ème feuille
+output_excel = TRUE # Si TRUE, exporte un fichier Excel
+)
+# Un fichier d'analyse de réactivités anti-HLA classe I (OneLambda) est présent dans `inst/extdata/`.  La réactivité est mieux résolue pour ce cas en analysant les paires d’eplets du soi. Pour le charger, exécuter le code suivant :
+
+P003 <- system.file("extdata", "P003-panel.xlsx", package = "epletPairFinder")
+
+# Pour analyser P003, exécuter le code suivant
+resultats_P003 <- analyse_ACC_self(P003, clean_eplet) # uniquement les données à analysés et les eplets nettoyés sont précisés si les arguments qui sont précisés par défaut ne seront pas modifiés (seuil = 1000, soi_file = NULL et output_excel = TRUE)
+
+# pour visualiser dans R les résultats, exécuter les codes suivants
+resultats_P003[[1]] # pour voir les eplets du soi
+resultats_P003[[2]] # pour voir toutes les combinaisons possibles self /self eplets (S_NS), le deuxième eplet du soi est assigné NS
+resultats_P003[[3]] # pour voir les combinaisons les plus probables self/self eplets (S_NS) (minimums de combinaisons pour le maximum de couverture des Ag positifs)
+```
+
 
 Les eplets retenus doivent ensuite être vérifiés en tenant compte de la distance qui les sépare, à l’aide de la plateforme [pHLA3D](https://www.phla3d.com.br/) ou de l’outil [Cn3D](https://www.ncbi.nlm.nih.gov/Structure/icn3d)
 

@@ -10,7 +10,7 @@
 #' @examples
 #' # creer_non_self(eplet_soi, clean_eplet, choix = 1)
 creer_non_self <- function(eplet_soi, clean_eplet, choix = 1) {
-  message(" Construction des eplets du soi sur tous les alleles du meme locus...")
+  message(" Construction des eplets du soi sur tous les alleles...")
 
   # Verification du choix
   if (!choix %in% 1:3) {
@@ -19,12 +19,12 @@ creer_non_self <- function(eplet_soi, clean_eplet, choix = 1) {
   }
 
   # Verification des colonnes necessaires
-  required_cols <- c("locus", "name")
+  required_cols <- c("name")
   if (!all(required_cols %in% names(eplet_soi))) {
-    stop(" eplet_soi doit contenir les colonnes : 'locus', 'name'")
+    stop(" eplet_soi doit contenir les colonnes :  'name'")
   }
   if (!all(required_cols %in% names(clean_eplet[[choix]]))) {
-    stop("clean_eplet[[choix]] doit contenir les colonnes : 'locus', 'name'")
+    stop("clean_eplet[[choix]] doit contenir les colonnes : name'")
   }
 
   # Selection du sous-ensemble choisi
@@ -32,8 +32,8 @@ creer_non_self <- function(eplet_soi, clean_eplet, choix = 1) {
 
   # Jointure sur locus et name
   result <- eplet_soi %>%
-    left_join(selected_select, by = c("locus", "name")) %>%
-    select(allele, name, locus) %>%
+    left_join(selected_select, by = c("name")) %>%
+    select(allele, name) %>%
     rename(self = name)
 
   return(result)

@@ -29,8 +29,8 @@ creer_self <- function(soi_file = NULL, case, clean_eplet) {
     sheets <- tryCatch(readxl::excel_sheets(soi_file), error = function(e) NULL)
     if (!is.null(sheets) && length(sheets) > 1) {
       soi_epvix <- read_excel(soi_file, sheet = 2) %>%
-        select(1, 3) %>%
-        setNames(c("locus", "eplet")) %>%
+        select( 3) %>%
+        setNames(c("eplet")) %>%
         unnest_tokens(name, eplet, to_lower = FALSE,
                                 token = "regex", pattern = "\\s+") %>%
         distinct()
@@ -49,9 +49,9 @@ creer_self <- function(soi_file = NULL, case, clean_eplet) {
   if (is.null(soi_epvix)) {
     eplet_soi <- case %>%
       filter(eplet == "[SELF]") %>%
-      left_join(clean_select, by = c("allele", "locus")) %>%
+      left_join(clean_select, by = c("allele")) %>%
       distinct() %>%
-      select(locus, name) %>%
+      select(name) %>%
       distinct()
     message(" Eplets du soi crees automatiquement a partir des donnees ACC.")
   } else {

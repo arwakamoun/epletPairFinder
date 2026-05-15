@@ -2,6 +2,7 @@
 
 export(ACC)
 export(analyse_ACC)
+export(analyse_ACC_self)
 export(associer_acc)
 export(calculer_resultats)
 export(clean_eplet_data)

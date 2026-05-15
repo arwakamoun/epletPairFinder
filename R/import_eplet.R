@@ -79,7 +79,7 @@ get_epregistry_data <- function(local_excel = NULL,
 clean_eplet_data <- function(raw_data) {
 
   all_eplets <- raw_data %>%
-    select(-c(3:4, 7:8, 10)) %>%
+    select(c(1:2, 5:6, 9)) %>%
     rename_with(~ tolower(str_remove_all(.x, "\\*"))) %>%
     rename_with(~ "alleles", .cols = 5) %>%
     mutate(status = if_else(status == "Confirmed", "confirmed", "not_confirmed")) %>%
