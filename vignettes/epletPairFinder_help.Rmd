@@ -139,7 +139,7 @@ copier la table incluant les noms des loci HLA classe I, leur nombre et leurs li
 
 # Option 1 : fichier local
 clean_eplet <- import_and_clean_eplets("eplets.xlsx") # importer et nettoyer le fichier enregistré à partir de [EpRegistry](https://www.epregistry.com.br/databases/ABC)
-# un ex de fichier enregisté à partir de Epregistry est présent dans  `inst/extdata/`, il correspond à la version 2025-01-14 (IPD-IMGT/HLA: 3.63). Pour charger ce fichier, exécuter le code suivant :
+# un ex de fichier enregisté à partir de Epregistry est présent dans  `inst/extdata/`, il correspond à la version 2026-01-14 (IPD-IMGT/HLA: 3.63). Pour charger ce fichier, exécuter le code suivant :
 eplet_file <- system.file("extdata", "eplets.xlsx", package = "epletPairFinder")
 clean_eplet <- import_and_clean_eplets(eplet_file)
 
