@@ -64,21 +64,18 @@ resultats_P001[[3]]  # combinaisons les plus probables
 Une vignette complète expliquant la méthodologie d’analyse, les concepts
 immunologiques et les exemples détaillés est disponible ici :
 
-``` r
-browseVignettes("epletPairFinder")
-```
+[📘 Consulter le tutoriel
+epletPairFinder](https://arwakamoun.github.io/epletPairFinder/articles/epletPairFinder_help.html)
 
 # 📝 Références
 
 Duquesnoy RJ. Humoral alloimmunity in transplantation… Front Immunol.
 2011.
 
-<https://www.epvix.com.br>
-
-<https://www.epregistry.com.br/databases/ABC>
+[EpVix](https://www.epvix.com.br) [EpRegistry – ABC
+database](https://www.epregistry.com.br/databases/ABC)
 
 # Auteur
 
 Dr Arwa Kamoun Laboratoire d’Immunologie & Pathologie Rénale Hôpital
 Hédi Chaker – Université de Sfax (Tunisie)
-# epletPairFinder
