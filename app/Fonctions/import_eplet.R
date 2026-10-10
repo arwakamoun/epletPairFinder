@@ -119,6 +119,14 @@ clean_eplet_data <- function(raw_data) {
 #'
 #' @export
 
+chromote::set_chrome_args(
+  c(
+    chromote::default_chrome_args(),
+    "--no-sandbox",
+    "--disable-dev-shm-usage"
+  )
+)
+
 import_and_clean_eplets <- function(local_excel = NULL,
                                     url = "https://www.epregistry.com.br/databases/ABC") {
   message("Import et nettoyage des donnees EpRegistry...")
