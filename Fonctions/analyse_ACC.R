@@ -1,0 +1,104 @@
+#' Analyse complete de l'ACC (Allo-anticorps anti-HLA)
+#'
+#' Cette fonction execute l'ensemble du pipeline pour l'analyse des ACC :
+#' lecture des fichiers, identification des eplets du soi, association avec
+#' les alleles, calcul des resultats bruts selon un seuil MFI, generation
+#' des resultats finaux et sauvegarde optionnelle en fichier Excel.
+#'
+#' @param acc_file Chemin vers le fichier ACC a analyser.
+#' @param clean_eplet Liste issue de la fonction `clean_eplet_data()` contenant les tables d'eplets
+#' @param choix Entier (1, 2 ou 3) pour selectionner le sous-ensemble de clean_eplet. Default = 1.
+#' @param seuil Numeric. Seuil MFI au-dessus duquel un resultat est considere "positif". Default = 1000.
+#' @param soi_file Chemin vers le fichier contenant les eplets du soi. Default = NULL.
+#' @param output_excel Logical. Sauvegarder les resultats dans un fichier Excel. Default = TRUE.
+#' @param output_name Nom du fichier Excel de sortie. Si NULL, un nom par defaut est genere.
+#'
+#' @return Liste contenant :
+#' \item{case}{Data frame ACC brut}
+#' \item{eplet_soi}{eplets du soi identifies}
+#' \item{seplet_nsallele}{eplets du soi associes a tous les alleles du meme locus}
+#' \item{case_f}{ACC associe aux eplets du soi}
+#' \item{res_total}{Resultats finaux complets}
+#' \item{res_prob}{Resultats finaux les plus probables}
+#' @export
+#'
+#' @examples
+#' # resultats <- analyse_ACC("ACC.xlsx", clean_eplet, choix = 1, seuil = 1000)
+analyse_ACC <- function(
+    acc_file,
+    clean_eplet,
+    choix = 1,
+    seuil = 1000,
+    soi_file = NULL,
+    output_excel = TRUE,
+    output_name = NULL
+) {
+
+
+  message(" Demarrage de l'analyse complete de l'ACC...")
+
+  # ---- etape 1 : Lecture et preparation du fichier ACC ----
+  message("1 Lecture et nettoyage du fichier ACC...")
+
+
+  case <- ACC(acc_file, clean_eplet = clean_eplet)
+
+  # ---- etape 2 : Creation des eplets du soi ----
+  message("2 Identification des eplets du soi...")
+  eplet_soi <- creer_self(
+    soi_file = soi_file,
+    case = case,
+    clean_eplet = clean_eplet
+  )
+
+  # ---- etape 3 : eplets du soi sur tous les alleles ----
+  message("3 Construction des eplets du soi sur les alleles...")
+  seplet_nsallele <- creer_non_self(
+    eplet_soi = eplet_soi,
+    clean_eplet = clean_eplet,
+    choix = choix
+  )
+
+  # ---- etape 4 : Association des donnees ACC avec les eplets du soi ----
+  message("4 Association des donnees ACC avec les eplets du soi...")
+  case_f <- associer_acc(case, seplet_nsallele)
+
+  # ---- etape 5 : Calcul des resultats selon le seuil MFI ----
+  message("5 Calcul des resultats bruts (seuil = ", seuil, ")...")
+  res <- calculer_resultats(case_f, seuil = seuil)
+
+  # ---- etape 6 : Generation du resultat final ----
+  message("6 Generation du tableau final...")
+  final <- generer_resultat_final(case_f, res)
+
+  # ---- etape 7 : Sauvegarde optionnelle ----
+  if (isTRUE(output_excel)) {
+    if (is.null(output_name)) {
+      output_name <- paste0(
+        "Resultats_ACC_",
+        tools::file_path_sans_ext(basename(acc_file)),
+        "_", format(Sys.Date(), "%Y%m%d"), ".xlsx"
+      )
+    }
+
+    message(" Sauvegarde des resultats dans : ", output_name)
+
+    writexl::write_xlsx(
+      list(
+        "Resultats complets" = final$res_total,
+        "Resultats probables" = final$res_prob,
+        "eplets du soi" = eplet_soi
+      ),
+      path = output_name
+    )
+
+    message("Resultats enregistres avec succes dans '", output_name, "'.")
+  }
+
+  # ---- Retourner les objets principaux ----
+  return(list(
+    eplet_soi = eplet_soi,
+    res_total = final$res_total,
+    res_prob = final$res_prob
+  ))
+}
