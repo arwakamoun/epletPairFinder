@@ -28,12 +28,21 @@ creer_self <- function(soi_file = NULL, case, clean_eplet) {
   if (!is.null(soi_file)) {
     sheets <- tryCatch(readxl::excel_sheets(soi_file), error = function(e) NULL)
     if (!is.null(sheets) && length(sheets) > 1) {
+
       soi_epvix <- read_excel(soi_file, sheet = 2) %>%
         dplyr::select( 3) %>%
         setNames(c("eplet")) %>%
+        dplyr::mutate(
+          eplet = stringr::str_replace_all(
+            eplet,
+            "(?<=[A-Za-z])(?=[0-9])",
+            " "
+          )
+        ) %>%
         tidytext::unnest_tokens(name, eplet, to_lower = FALSE,
                                 token = "regex", pattern = "\\s+") %>%
-        distinct()
+        dplyr::distinct()
+
       message(" Eplets du soi lus depuis la feuille Excel (EpVix).")
     } else {
       message(" Le fichier fourni n'a qu'une seule feuille : calcul automatique utilise.")

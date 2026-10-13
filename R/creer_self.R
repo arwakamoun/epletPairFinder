@@ -28,12 +28,21 @@ creer_self <- function(soi_file = NULL, case, clean_eplet) {
   if (!is.null(soi_file)) {
     sheets <- tryCatch(readxl::excel_sheets(soi_file), error = function(e) NULL)
     if (!is.null(sheets) && length(sheets) > 1) {
+
       soi_epvix <- read_excel(soi_file, sheet = 2) %>%
-        select( 3) %>%
+        dplyr::select( 3) %>%
         setNames(c("eplet")) %>%
-        unnest_tokens(name, eplet, to_lower = FALSE,
+        dplyr::mutate(
+          eplet = stringr::str_replace_all(
+            eplet,
+            "(?<=[A-Za-z])(?=[0-9])",
+            " "
+          )
+        ) %>%
+        tidytext::unnest_tokens(name, eplet, to_lower = FALSE,
                                 token = "regex", pattern = "\\s+") %>%
-        distinct()
+        dplyr::distinct()
+
       message(" Eplets du soi lus depuis la feuille Excel (EpVix).")
     } else {
       message(" Le fichier fourni n'a qu'une seule feuille : calcul automatique utilise.")
@@ -48,11 +57,11 @@ creer_self <- function(soi_file = NULL, case, clean_eplet) {
   # --- etape 3 : si pas de fichier, creation automatique ---
   if (is.null(soi_epvix)) {
     eplet_soi <- case %>%
-      filter(eplet == "[SELF]") %>%
-      left_join(clean_select, by = c("allele")) %>%
-      distinct() %>%
-      select(name) %>%
-      distinct()
+      dplyr::filter(eplet == "[SELF]") %>%
+      dplyr::left_join(clean_select, by = c("allele")) %>%
+      dplyr::distinct() %>%
+      dplyr::select(name) %>%
+      dplyr::distinct()
     message(" Eplets du soi crees automatiquement a partir des donnees ACC.")
   } else {
     eplet_soi <- soi_epvix
